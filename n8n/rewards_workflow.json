@@ -1,0 +1,154 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Solicitação de Ajuste de Rewards - Zup",
+        "formDescription": "Preencha os dados para iniciar o fluxo automatizado de validação salarial",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "ID do Zupper",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Novo Salário Sugerido",
+              "fieldType": "number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "E-mail do Gestor/Solicitante",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        0
+      ],
+      "id": "277fd74e-c11d-4336-bd2f-6162a3fb3be4",
+      "name": "On form submission",
+      "webhookId": "be0ed890-ba82-45fb-b058-1574409b844e"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "465b4899-f07f-499b-84f9-b22fed873596",
+              "leftValue": "={{ $json['Novo Salário Sugerido'] }}",
+              "rightValue": 15000,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        224,
+        0
+      ],
+      "id": "6b6a004c-e4bf-40f1-961f-80151d0c2455",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "fromEmail": "wasow23913@calirona.com",
+        "toEmail": "seu-email@zup.com.br",
+        "subject": "=Exceção de Teto Salarial - {{ $json['ID do Zupper'] }}",
+        "emailFormat": "text",
+        "text": "=\"Olá! A solicitação de ajuste salarial para o colaborador {{ $json['ID do Zupper'] }} no valor de R${{$json['Novo Salário Sugerido'] }} foi APROVADA e processada na base de Rewards.\"",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        448,
+        -96
+      ],
+      "id": "44b13cc3-ed1f-4ef5-9d56-540da6e5c98e",
+      "name": "Send an Email",
+      "webhookId": "dfc943a4-b479-42b6-bafb-35820a9b05d0"
+    },
+    {
+      "parameters": {
+        "fromEmail": "wasow23913@calirona.com",
+        "toEmail": "seu2-email@zup.com.br",
+        "subject": "=[REWARDS - ALERTA] Exceção de Teto Salarial - {{ $json['ID do Zupper'] }}",
+        "emailFormat": "text",
+        "text": " \"Atenção! A solicitação para o Zupper {{ $('n8n Form').item.json['ID do Zupper'] }} no valor de R${{$json['Novo Salário Sugerido'] }} excede a alçada automática de R$ 15.000,00 e foi encaminhada para análise do time de Rewards.\"\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        448,
+        96
+      ],
+      "id": "65d21ba9-5b19-480e-8c0e-10309ddf0424",
+      "name": "Send an Email1",
+      "webhookId": "bfebeaf9-4702-4424-a03a-061643cbddf1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send an Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "0b72dad3-ab5f-4b3e-8405-5e65cfb34da1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "98133f49342e7934754242e7c2c22105758503e2fc1b1dff626dd73b05230831"
+  },
+  "nodeGroups": [],
+  "id": "tChGngklqKKYmqHs",
+  "tags": []
+}
